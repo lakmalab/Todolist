@@ -138,6 +138,8 @@ public class TodoForm {
                                 try {
                                     addTodoDoneItem(item.getTitle(), item.getDescription());
                                     deleteItem(item);
+                                    loadItems();
+                                    loadTable();
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -164,11 +166,13 @@ public class TodoForm {
     void onrowselected(MouseEvent event) {
 
     }
-    private boolean deleteItem(TodoItem selectedItem ) throws SQLException {
+    private boolean deleteItem(TodoItem selectedItem) throws SQLException {
         if (selectedItem == null) return false;
-        String sql = "DELETE active_tasks FROM active_tasks WHERE task_title="+ selectedItem.getTitle();
-        return DBConnection.getInstance().getConnection().createStatement().executeUpdate(sql) > 0;
+        Connection connection = DBConnection.getInstance().getConnection();
+        PreparedStatement stm = connection.prepareStatement("DELETE FROM active_tasks WHERE task_title = ?");
+        stm.setObject(1, selectedItem.getTitle());
+        int res = stm.executeUpdate();
+        return res >0;
     }
-
 
 }
