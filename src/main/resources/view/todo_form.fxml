@@ -12,20 +12,21 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TodoForm">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#304d69" height="302.0" layoutX="19.0" layoutY="68.0" stroke="BLACK" strokeType="INSIDE" width="257.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#304d69" height="325.0" layoutX="19.0" layoutY="68.0" stroke="BLACK" strokeType="INSIDE" width="246.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#13518c" height="88.0" layoutY="-32.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="550.0" />
-      <ListView layoutX="32.0" layoutY="82.0" prefHeight="242.0" prefWidth="223.0" />
+      <ListView fx:id="todoListView" layoutX="32.0" layoutY="82.0" prefHeight="206.0" prefWidth="215.0" />
       <Text fill="WHITE" layoutX="227.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ToDo List" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="26.0" />
          </font>
       </Text>
-      <TextField fx:id="txtadd" layoutX="32.0" layoutY="333.0" prefHeight="24.0" prefWidth="173.0" promptText="Add Task" />
-      <Button layoutX="215.0" layoutY="333.0" mnemonicParsing="false" onAction="#addonaction" text="Add" />
-      <TableView fx:id="tblDone" layoutX="295.0" layoutY="68.0" onMouseClicked="#onrowselected" prefHeight="302.0" prefWidth="246.0">
+      <TextField fx:id="txtDescription" layoutX="32.0" layoutY="327.0" prefHeight="61.0" prefWidth="215.0" promptText="Description" />
+      <Button layoutX="208.0" layoutY="294.0" mnemonicParsing="false" onAction="#addonaction" text="Add" />
+      <TableView fx:id="tblDone" layoutX="274.0" layoutY="68.0" onMouseClicked="#onrowselected" prefHeight="319.0" prefWidth="267.0">
         <columns>
             <TableColumn fx:id="coldone" prefWidth="289.6000274658203" text="Done" />
         </columns>
       </TableView>
+      <TextField fx:id="txtTitle" layoutX="32.0" layoutY="294.0" prefHeight="24.0" prefWidth="173.0" promptText="Add Task Title" />
    </children>
 </AnchorPane>

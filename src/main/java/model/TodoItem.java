@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class TodoItem {
+    private String title;
     private String description;
     private Boolean isdone;
 }
