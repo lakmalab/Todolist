@@ -37,7 +37,6 @@ public class TodoForm {
     @FXML
 
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    ListView listView = new ListView();
     @FXML
     void addonaction(ActionEvent event) throws SQLException {
         if (addTodoItem()==true) {
@@ -135,7 +134,7 @@ public class TodoForm {
                         hBox.setAlignment(Pos.CENTER_LEFT);
                         hBox.setHgrow(titleLabel, Priority.ALWAYS);
 
-                        setText(null); // important to clear default text rendering
+                        setText(null);
                         setGraphic(hBox);
                     }
                 }
