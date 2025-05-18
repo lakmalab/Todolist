@@ -5,9 +5,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import model.TodoItem;
 
 import java.sql.Connection;
@@ -23,11 +26,13 @@ public class TodoForm {
     public ListView todoListView;
     public TextField txtDescription;
     public TextField txtTitle;
+    public TableColumn colStat;
     @FXML
     private TableColumn<?, ?> colSalary;
     ObservableList<TodoItem> todoItems = FXCollections.observableArrayList();
+    ObservableList<TodoItem> doneList = FXCollections.observableArrayList();
     @FXML
-    private TableView<?> tblDone;
+    public TableView<TodoItem> tblDone;
 
     @FXML
 
@@ -45,6 +50,7 @@ public class TodoForm {
             alert.showAndWait();
         }
         loadItems();
+        loadTable();
     }
 
     private boolean addTodoItem() throws SQLException {
@@ -60,14 +66,80 @@ public class TodoForm {
         int res = stm.executeUpdate();
         return res >0;
     }
+    private boolean addTodoDoneItem(String title ,String description ) throws SQLException {
+        TodoItem newitem = new TodoItem(
+                title,
+                description,
+                Boolean.TRUE
+        );
+        Connection connection = DBConnection.getInstance().getConnection();
+        PreparedStatement stm = connection.prepareStatement("INSERT INTO completed_tasks  (task_title, task_description) VALUES (?, ?)");
+        stm.setObject(1, newitem.getTitle());
+        stm.setObject(2, newitem.getDescription());
+        int res = stm.executeUpdate();
+        return res >0;
+    }
+    private void loadTable(){
+        try {
+            doneList.clear();
+            ResultSet resultSet = DBConnection.getInstance().getConnection().createStatement().executeQuery("SELECT * From completed_tasks");
+            while(resultSet.next()){
+                doneList.add(new TodoItem(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        true));
+                //coldone.setCellValueFactory((new PropertyValueFactory<>("Title")));
+                colStat.setCellValueFactory((new PropertyValueFactory<>("description")));
+                ObservableList<TodoItem> TodoItemdoneObservableArray= FXCollections.observableArrayList();
+                doneList.forEach(TodoItem -> {TodoItemdoneObservableArray.add(TodoItem);});
+                tblDone.setItems(TodoItemdoneObservableArray);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
+    }
     private void loadItems(){
+        todoItems.clear();
         try {
             ResultSet resultSet = DBConnection.getInstance().getConnection().createStatement().executeQuery("SELECT * From active_tasks");
             while(resultSet.next()){
                 todoItems.add(new TodoItem(resultSet.getString("task_title"), resultSet.getString("task_description"), false));
             }
+
             todoListView.setItems(todoItems);
+            todoListView.setCellFactory(param -> new ListCell<TodoItem>() {
+                protected void updateItem(TodoItem item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null || item.getTitle() == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        Label titleLabel = new Label(item.getTitle());
+                        CheckBox checkBox = new CheckBox();
+                        checkBox.setSelected(item.getIsdone());
+
+                        checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                            if (isNowSelected && item != null) {
+                                try {
+                                    addTodoDoneItem(item.getTitle(), item.getDescription());
+                                    deleteItem(item);
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
+
+                        HBox hBox = new HBox(10, titleLabel, checkBox);
+                        hBox.setAlignment(Pos.CENTER_LEFT);
+                        hBox.setHgrow(titleLabel, Priority.ALWAYS);
+
+                        setText(null); // important to clear default text rendering
+                        setGraphic(hBox);
+                    }
+                }
+            });
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -79,5 +151,12 @@ public class TodoForm {
     void onrowselected(MouseEvent event) {
 
     }
+    private boolean deleteItem(TodoItem selectedItem ) throws SQLException {
+        if (selectedItem == null) return false;
+
+        String sql = "DELETE FROM active_tasks WHERE task_id  = " + selectedItem.getTitle();
+        return DBConnection.getInstance().getConnection().createStatement().executeUpdate(sql) > 0;
+    }
+
 
 }

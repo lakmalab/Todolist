@@ -22,9 +22,10 @@
       </Text>
       <TextField fx:id="txtDescription" layoutX="32.0" layoutY="327.0" prefHeight="61.0" prefWidth="215.0" promptText="Description" />
       <Button layoutX="208.0" layoutY="294.0" mnemonicParsing="false" onAction="#addonaction" text="Add" />
-      <TableView fx:id="tblDone" layoutX="274.0" layoutY="68.0" onMouseClicked="#onrowselected" prefHeight="319.0" prefWidth="267.0">
+      <TableView fx:id="tblDone" layoutX="279.0" layoutY="70.0" onMouseClicked="#onrowselected" prefHeight="314.0" prefWidth="265.0">
         <columns>
-            <TableColumn fx:id="coldone" prefWidth="289.6000274658203" text="Done" />
+            <TableColumn fx:id="condone" minWidth="0.0" prefWidth="10.66668701171875" text="Task" />
+            <TableColumn fx:id="colStat" minWidth="0.0" prefWidth="253.33328247070312" text="Status" />
         </columns>
       </TableView>
       <TextField fx:id="txtTitle" layoutX="32.0" layoutY="294.0" prefHeight="24.0" prefWidth="173.0" promptText="Add Task Title" />
