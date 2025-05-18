@@ -22,9 +22,8 @@ import java.time.LocalDate;
 import static java.lang.Double.parseDouble;
 
 public class TodoForm {
-    LocalDate currentDate = LocalDate.now();
-
     public TableColumn coldone;
+    LocalDate currentDate = LocalDate.now();
     public ListView todoListView;
     public TextField txtDescription;
     public TextField txtTitle;
@@ -97,11 +96,11 @@ public class TodoForm {
             ResultSet resultSet = DBConnection.getInstance().getConnection().createStatement().executeQuery("SELECT * From completed_tasks");
             while(resultSet.next()){
                 doneList.add(new TodoItem(
-                        resultSet.getString(1),
                         resultSet.getString(2),
+                        resultSet.getString(4),
                         currentDate.toString(),
                         true));
-                //coldone.setCellValueFactory((new PropertyValueFactory<>("Title")));
+                coldone.setCellValueFactory((new PropertyValueFactory<>("title")));
                 colStat.setCellValueFactory((new PropertyValueFactory<>("description")));
                 ObservableList<TodoItem> TodoItemdoneObservableArray= FXCollections.observableArrayList();
                 doneList.forEach(TodoItem -> {TodoItemdoneObservableArray.add(TodoItem);});
@@ -129,7 +128,7 @@ public class TodoForm {
                         setText(null);
                         setGraphic(null);
                     } else {
-                        Label titleLabel = new Label(item.getTitle() + " : " + item.getCompletiontime());
+                        Label titleLabel = new Label(item.getTitle() + "  |  " + item.getCompletiontime());
                         CheckBox checkBox = new CheckBox();
                         checkBox.setSelected(item.getIsdone());
 
@@ -146,7 +145,7 @@ public class TodoForm {
                             }
                         });
 
-                        HBox hBox = new HBox(10, titleLabel, checkBox);
+                        HBox hBox = new HBox(10, checkBox, titleLabel );
                         hBox.setAlignment(Pos.CENTER_LEFT);
                         hBox.setHgrow(titleLabel, Priority.ALWAYS);
 
@@ -175,4 +174,11 @@ public class TodoForm {
         return res >0;
     }
 
+    public void itemselected(MouseEvent mouseEvent) {
+        TodoItem selectedCustomer = (TodoItem) todoListView.getSelectionModel().getSelectedItem();
+        alert.setTitle("Description");
+        alert.setHeaderText(selectedCustomer.getTitle());
+        alert.setContentText(selectedCustomer.getDescription());
+        alert.showAndWait();
+    }
 }

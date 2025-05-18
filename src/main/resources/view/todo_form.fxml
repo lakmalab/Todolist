@@ -15,7 +15,7 @@
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#304d69" height="325.0" layoutX="19.0" layoutY="68.0" stroke="BLACK" strokeType="INSIDE" width="246.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#13518c" height="88.0" layoutY="-32.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="550.0" />
-      <ListView fx:id="todoListView" layoutX="32.0" layoutY="82.0" prefHeight="187.0" prefWidth="215.0" />
+      <ListView fx:id="todoListView" layoutX="32.0" layoutY="82.0" onMouseClicked="#itemselected" prefHeight="187.0" prefWidth="215.0" />
       <Text fill="WHITE" layoutX="227.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ToDo List" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="26.0" />
@@ -25,8 +25,8 @@
       <Button layoutX="208.0" layoutY="281.0" mnemonicParsing="false" onAction="#addonaction" text="Add" />
       <TableView fx:id="tblDone" layoutX="279.0" layoutY="70.0" onMouseClicked="#onrowselected" prefHeight="314.0" prefWidth="265.0">
         <columns>
-            <TableColumn fx:id="condone" minWidth="0.0" prefWidth="10.66668701171875" text="Task" />
-            <TableColumn fx:id="colStat" minWidth="0.0" prefWidth="253.33328247070312" text="Status" />
+            <TableColumn fx:id="coldone" minWidth="0.0" prefWidth="94.00006103515625" text="Task" />
+            <TableColumn fx:id="colStat" minWidth="0.0" prefWidth="171.33322143554688" text="Finished on" />
         </columns>
       </TableView>
       <TextField fx:id="txtTitle" layoutX="32.0" layoutY="281.0" prefHeight="25.0" prefWidth="161.0" promptText="Add Task Title" />
