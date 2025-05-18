@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import model.TodoItem;
 
 import java.sql.Connection;
@@ -121,6 +122,7 @@ public class TodoForm {
 
             todoListView.setItems(todoItems);
             todoListView.setCellFactory(param -> new ListCell<TodoItem>() {
+                @Override
                 protected void updateItem(TodoItem item, boolean empty) {
                     super.updateItem(item, empty);
 
@@ -128,7 +130,12 @@ public class TodoForm {
                         setText(null);
                         setGraphic(null);
                     } else {
-                        Label titleLabel = new Label(item.getTitle() + "  |  " + item.getCompletiontime());
+                        Label titleLabel = new Label(item.getTitle() );
+                        Label detail = new Label( item.getCompletiontime() != null
+                                ? item.getCompletiontime()
+                                : "Undefined");
+                        VBox layout = new VBox(titleLabel,detail);
+
                         CheckBox checkBox = new CheckBox();
                         checkBox.setSelected(item.getIsdone());
 
@@ -145,9 +152,9 @@ public class TodoForm {
                             }
                         });
 
-                        HBox hBox = new HBox(10, checkBox, titleLabel );
+                        HBox hBox = new HBox(10, checkBox, layout );
                         hBox.setAlignment(Pos.CENTER_LEFT);
-                        hBox.setHgrow(titleLabel, Priority.ALWAYS);
+                        hBox.setHgrow(layout, Priority.ALWAYS);
 
                         setText(null);
                         setGraphic(hBox);
