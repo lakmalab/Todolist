@@ -24,7 +24,7 @@
       <Button layoutX="215.0" layoutY="333.0" mnemonicParsing="false" onAction="#addonaction" text="Add" />
       <TableView fx:id="tblDone" layoutX="295.0" layoutY="68.0" onMouseClicked="#onrowselected" prefHeight="302.0" prefWidth="246.0">
         <columns>
-            <TableColumn fx:id="colSalary" prefWidth="289.6000274658203" text="Done" />
+            <TableColumn fx:id="coldone" prefWidth="289.6000274658203" text="Done" />
         </columns>
       </TableView>
    </children>

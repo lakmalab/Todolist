@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 
 public class TodoForm {
 
+    public TableColumn coldone;
     @FXML
     private TableColumn<?, ?> colSalary;
 
