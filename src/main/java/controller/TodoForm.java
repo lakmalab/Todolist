@@ -17,22 +17,31 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static java.lang.Double.parseDouble;
 
 public class TodoForm {
+    LocalDate currentDate = LocalDate.now();
 
     public TableColumn coldone;
     public ListView todoListView;
     public TextField txtDescription;
     public TextField txtTitle;
     public TableColumn colStat;
+    public DatePicker dateTime;
+    public void initialize() {
+        dateTime.setValue(LocalDate.now());
+        loadItems();
+        loadTable();
+    }
     @FXML
     private TableColumn<?, ?> colSalary;
     ObservableList<TodoItem> todoItems = FXCollections.observableArrayList();
     ObservableList<TodoItem> doneList = FXCollections.observableArrayList();
     @FXML
     public TableView<TodoItem> tblDone;
+
 
     @FXML
 
@@ -53,15 +62,18 @@ public class TodoForm {
     }
 
     private boolean addTodoItem() throws SQLException {
+        LocalDate selectedDate = dateTime.getValue();
         TodoItem newitem = new TodoItem(
                 txtTitle.getText(),
                 txtDescription.getText(),
+                selectedDate.toString(),
                 false
         );
         Connection connection = DBConnection.getInstance().getConnection();
-        PreparedStatement stm = connection.prepareStatement("INSERT INTO active_tasks (task_title, task_description) VALUES (?, ?)");
+        PreparedStatement stm = connection.prepareStatement("INSERT INTO active_tasks (task_title, task_description,created_at) VALUES (?, ?,?)");
         stm.setObject(1, newitem.getTitle());
         stm.setObject(2, newitem.getDescription());
+        stm.setObject(3, newitem.getCompletiontime());
         int res = stm.executeUpdate();
         return res >0;
     }
@@ -69,6 +81,7 @@ public class TodoForm {
         TodoItem newitem = new TodoItem(
                 title,
                 description,
+                currentDate.toString(),
                 Boolean.TRUE
         );
         Connection connection = DBConnection.getInstance().getConnection();
@@ -86,6 +99,7 @@ public class TodoForm {
                 doneList.add(new TodoItem(
                         resultSet.getString(1),
                         resultSet.getString(2),
+                        currentDate.toString(),
                         true));
                 //coldone.setCellValueFactory((new PropertyValueFactory<>("Title")));
                 colStat.setCellValueFactory((new PropertyValueFactory<>("description")));
@@ -103,7 +117,7 @@ public class TodoForm {
         try {
             ResultSet resultSet = DBConnection.getInstance().getConnection().createStatement().executeQuery("SELECT * From active_tasks");
             while(resultSet.next()){
-                todoItems.add(new TodoItem(resultSet.getString("task_title"), resultSet.getString("task_description"), false));
+                todoItems.add(new TodoItem(resultSet.getString("task_title"), resultSet.getString("task_description"),resultSet.getString("created_at"), false));
             }
 
             todoListView.setItems(todoItems);
@@ -115,7 +129,7 @@ public class TodoForm {
                         setText(null);
                         setGraphic(null);
                     } else {
-                        Label titleLabel = new Label(item.getTitle());
+                        Label titleLabel = new Label(item.getTitle() + " : " + item.getCompletiontime());
                         CheckBox checkBox = new CheckBox();
                         checkBox.setSelected(item.getIsdone());
 
@@ -152,8 +166,7 @@ public class TodoForm {
     }
     private boolean deleteItem(TodoItem selectedItem ) throws SQLException {
         if (selectedItem == null) return false;
-
-        String sql = "DELETE FROM active_tasks WHERE task_id  = " + selectedItem.getTitle();
+        String sql = "DELETE active_tasks FROM active_tasks WHERE task_title="+ selectedItem.getTitle();
         return DBConnection.getInstance().getConnection().createStatement().executeUpdate(sql) > 0;
     }
 
